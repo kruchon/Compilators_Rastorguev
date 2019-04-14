@@ -1705,7 +1705,7 @@ int OPA2()
 			strlen(FORMT[0])
 			)
 		{
-			if (SYM[i].TYPE == 'B' || SYM[i].TYPE == 'S')              /* если этот идентификатор*/
+			if (SYM[i].TYPE == 'B' || SYM[i].TYPE == 'S' || SYM[i].TYPE == 'D' || SYM[i].TYPE == 'R')              /* если этот идентификатор*/
 			{                                      /* имеет тип bin fixed,то:*/
 
 				if (strcmp(SYM[i].RAZR, "15")    /* если bin fixed (15),то:*/
