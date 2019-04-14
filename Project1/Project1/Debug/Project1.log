@@ -1,0 +1,5 @@
+﻿  Source.cpp
+c:\users\huawei\source\repos\project1\project1\source.cpp(751): warning C4102: L1: неиспользованная метка
+c:\users\huawei\source\repos\project1\project1\source.cpp(789): warning C4102: L4: неиспользованная метка
+c:\users\huawei\source\repos\project1\project1\source.cpp(802): warning C4102: L5: неиспользованная метка
+  Project1.vcxproj -> C:\Users\HUAWEI\source\repos\Project1\Debug\Project1.exe
