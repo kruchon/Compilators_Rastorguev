@@ -1323,17 +1323,6 @@ int AVI2()
 									  /* семблера  и            */
 					return 0;                             /* завершить программу    */
 				}
-				else if (SYM[i].TYPE == 'R' && !strcmp(FORMT[1], "ADDR")) {
-					memcpy(ASS_CARD._BUFCARD.OPERAC, "LA", 2);
-
-					strcpy(ASS_CARD._BUFCARD.OPERAND, "@RRAB,");
-					strcat(ASS_CARD._BUFCARD.OPERAND, FORMT[0]);
-					ASS_CARD._BUFCARD.OPERAND[strlen(ASS_CARD._BUFCARD.OPERAND)] = ' ';
-					memcpy(ASS_CARD._BUFCARD.COMM, "«агрузка адреса в регистр", 29);
-
-					ZKARD();
-					return 0;
-				}
 				else
 					return 3;                              /* если тип терма не bin  */
 									   /* fixed,то выход по ошиб-*/
@@ -1349,14 +1338,30 @@ int AVI2()
 							/* двухтермова€, то:      */
 	{
 		for (i = 0; i < ISYM; i++)                  /* если правый терм ариф- */
-		{                                            /* метического выражени€  */
-			if (!strcmp(SYM[i].NAME,                /*определен в табл.SYM,то:*/
-				FORMT[IFORMT - 1]) &&
-				strlen(SYM[i].NAME) ==
-				strlen(FORMT[IFORMT - 1])
-				)
+		{
+			char varName[9];
+			if (!strcmp("ADDR", FORMT[0])) {
+				strcpy(varName, FORMT[1]);
+			}
+			else {
+				strcpy(varName, FORMT[IFORMT - 1]);
+			}
+			/* метического выражени€  */
+			if (!strcmp(SYM[i].NAME, varName) &&
+				strlen(SYM[i].NAME) == strlen(varName))
 			{
-				if (SYM[i].TYPE == 'B')              /* если тип правого опе-  */
+				if (!strcmp(FORMT[0], "ADDR")) {
+					memcpy(ASS_CARD._BUFCARD.OPERAC, "LA", 2);
+
+					strcpy(ASS_CARD._BUFCARD.OPERAND, "@RRAB,");
+					strcat(ASS_CARD._BUFCARD.OPERAND, varName);
+					ASS_CARD._BUFCARD.OPERAND[strlen(ASS_CARD._BUFCARD.OPERAND)] = ' ';
+					memcpy(ASS_CARD._BUFCARD.COMM, "«агрузка адреса в регистр", 25);
+
+					ZKARD();
+					return 0;
+				}
+				else if (SYM[i].TYPE == 'B')              /* если тип правого опе-  */
 				{                                      /* ранда bin fixed, то:   */
 
 					if (STROKA[DST[I2].DST4 -         /* если знак опер."+",то: */
