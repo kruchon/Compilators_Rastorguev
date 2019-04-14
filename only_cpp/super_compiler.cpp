@@ -67,9 +67,9 @@ union                                             /*шаблон дл€ генерации    */
 		char PROB1;
 		char OPERAC[5];
 		char PROB2;
-		char OPERAND[12];
+		char OPERAND[20];
 		char PROB3;
-		char COMM[52];
+		char COMM[44];
 	} _BUFCARD;
 } ASS_CARD;
 
@@ -1297,7 +1297,21 @@ int AVI2()
 				strlen(FORMT[0])
 				)
 			{
-				if (SYM[i].TYPE == 'B')              /* в случае типа=bin fixed*/
+				if (SYM[i].TYPE == 'S' || SYM[i].TYPE == 'R') {
+					memcpy(ASS_CARD._BUFCARD.OPERAC,"LH", 1);
+					strcpy(ASS_CARD._BUFCARD.OPERAND,"@RRAB,");
+					strcat(ASS_CARD._BUFCARD.OPERAND,FORMT[0]);
+					ASS_CARD._BUFCARD.OPERAND[strlen(ASS_CARD._BUFCARD.OPERAND)] = ' ';
+					memcpy(ASS_CARD._BUFCARD.COMM,"«агрузка адреса в регистр", 25);
+					ZKARD(); 
+
+					memcpy(ASS_CARD._BUFCARD.OPERAC, "L", 1);
+					strcpy(ASS_CARD._BUFCARD.OPERAND, "@RRAB,0(@RRAB,0)");
+					ASS_CARD._BUFCARD.OPERAND[strlen(ASS_CARD._BUFCARD.OPERAND)] = ' ';
+					memcpy(ASS_CARD._BUFCARD.COMM, "«агрузка из адреса", 18);
+					ZKARD();
+					return 0;                             /* завершить программу    */
+				} else if (SYM[i].TYPE == 'B')              /* в случае типа=bin fixed*/
 				{
 					if (strcmp(SYM[i].RAZR, "15")    /* и разр€дности <= 15    */
 						<= 0)
@@ -1619,7 +1633,7 @@ int OEN2()
 				strcpy(ASS_CARD._BUFCARD.METKA, SYM[i].NAME);
 				ASS_CARD._BUFCARD.METKA[strlen(ASS_CARD._BUFCARD.METKA)] = ' ';
 				memcpy(ASS_CARD._BUFCARD.OPERAC, "DC", 2);
-				strcpy(ASS_CARD._BUFCARD.OPERAND, "F            ");
+				strcpy(ASS_CARD._BUFCARD.OPERAND, "F                    ");
 				memcpy(ASS_CARD._BUFCARD.COMM, "ќпределение указател€", 21);
 				ZKARD();
 			} if (SYM[i].TYPE == 'D') {
