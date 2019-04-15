@@ -1118,7 +1118,7 @@ int ODC1()
 				strcpy(SYM[ISYM].INIT, FORMT[5]);
 			}
 			else {
-				strcpy(SYM[ISYM].INIT, "0");
+				strcpy(SYM[ISYM].INIT, "");
 			}
 		}
 		ISYM++;
@@ -1298,7 +1298,7 @@ int AVI2()
 				)
 			{
 				if (SYM[i].TYPE == 'S' || SYM[i].TYPE == 'R') {
-					memcpy(ASS_CARD._BUFCARD.OPERAC,"LH", 1);
+					memcpy(ASS_CARD._BUFCARD.OPERAC,"L", 1);
 					strcpy(ASS_CARD._BUFCARD.OPERAND,"@RRAB,");
 					strcat(ASS_CARD._BUFCARD.OPERAND,FORMT[0]);
 					ASS_CARD._BUFCARD.OPERAND[strlen(ASS_CARD._BUFCARD.OPERAND)] = ' ';
@@ -1603,7 +1603,7 @@ int OEN2()
 
 			}
 			else if (SYM[i].TYPE == 'R') {
-				strcpy(ASS_CARD._BUFCARD.METKA, SYM[i].NAME);
+				strcpy(ASS_CARD._BUFCARD.OPERAND, SYM[i].NAME);
 				ASS_CARD._BUFCARD.METKA[strlen(ASS_CARD._BUFCARD.METKA)] = ' ';
 				memcpy(ASS_CARD._BUFCARD.OPERAC, "EQU", 3);
 				char currentName[8];
@@ -1611,6 +1611,9 @@ int OEN2()
 				strcpy(currentName, SYM[i].NAME);
 				bool basedFound = false;
 				for (int j = 0; j < NSYM; j++) {
+					if (SYM[j].TYPE != 'S') {
+						continue;
+					}
 					char anotherVariableReference[8];
 					strcpy(anotherVariableReference, SYM[j].BASED);
 					if (!strcmp(currentName, anotherVariableReference)) {
@@ -1625,30 +1628,36 @@ int OEN2()
 					return 2;
 				}
 
-				memcpy(ASS_CARD._BUFCARD.OPERAND, based, strlen(based));
+				memcpy(ASS_CARD._BUFCARD.METKA, based, strlen(based));
 				memcpy(ASS_CARD._BUFCARD.COMM, "ќпределение псевдонима", 22);
 				ZKARD();
 			}
 			else if (SYM[i].TYPE == 'S') {
-				strcpy(ASS_CARD._BUFCARD.METKA, SYM[i].NAME);
+				strcpy(ASS_CARD._BUFCARD.METKA, SYM[i].BASED);
 				ASS_CARD._BUFCARD.METKA[strlen(ASS_CARD._BUFCARD.METKA)] = ' ';
-				memcpy(ASS_CARD._BUFCARD.OPERAC, "DC", 2);
+				memcpy(ASS_CARD._BUFCARD.OPERAC, "DS", 2);
 				strcpy(ASS_CARD._BUFCARD.OPERAND, "F                    ");
 				memcpy(ASS_CARD._BUFCARD.COMM, "ќпределение указател€", 21);
 				ZKARD();
 			} if (SYM[i].TYPE == 'D') {
 				strcpy(ASS_CARD._BUFCARD.METKA, SYM[i].NAME);
 				ASS_CARD._BUFCARD.METKA[strlen(ASS_CARD._BUFCARD.METKA)] = ' ';
-				memcpy(ASS_CARD._BUFCARD.OPERAC, "DC", 2);
-
+				if (strlen(SYM[i].INIT) > 0) {
+					memcpy(ASS_CARD._BUFCARD.OPERAC, "DC", 2);
+				}
+				else {
+					memcpy(ASS_CARD._BUFCARD.OPERAC, "DS", 2);
+				}
 				char razr[5];
 				strcpy(razr, SYM[i].RAZR);
 				char value[12] = "           ";
 				strcpy(value, "PL");
 				strcat(value, razr);
-				strcat(value, "\'");
-				strcat(value, SYM[i].INIT);
-				strcat(value, "\'");
+				if (strlen(SYM[i].INIT) > 0) {
+					strcat(value, "\'");
+					strcat(value, SYM[i].INIT);
+					strcat(value, "\'");
+				}
 				memcpy(ASS_CARD._BUFCARD.OPERAND, value, strlen(value));
 
 				memcpy(ASS_CARD._BUFCARD.COMM, "ќпределение переменной", 22);
@@ -1725,7 +1734,7 @@ int OPA2()
 				if (strcmp(SYM[i].RAZR, "15")    /* если bin fixed (15),то:*/
 					<= 0)
 					memcpy(ASS_CARD._BUFCARD.OPERAC,   /* сформировать команду   */
-						"STH", 3);/* записи полуслова       */
+						"ST", 2);/* записи полуслова       */
 
 				else                                  /* иначе:                 */
 					memcpy(ASS_CARD._BUFCARD.OPERAC,   /* команду записи слова   */
@@ -2073,39 +2082,23 @@ main1:                                            /* по завершении чтени€   */
 				"недопустимый тип идентификатора: ",
 				&FORMT[IFORMT - 1], " в исх.тексте -> \"...",
 				&STROKA[DST[I2].DST2], "...\"");
-			break;                                     /* -выйти на обобщающую   */
-							   /*диагностику             */
-
-		case  4:                                    /*если код завершени€ = 4,*/
-							/* то:                    */
-			STROKA[DST[I2].DST2 + 20] = '\x0';     /* - диагностич.сообщение;*/
-			printf("%s%s\n%s%s%s\n",
-				"неопределенный идентификатор: ",
+			break;     
+		case  4:                   
+			STROKA[DST[I2].DST2 + 20] = '\x0';     
+			printf("%s%s\n%s%s%s\n","неопределенный идентификатор: ",
 				&FORMT[IFORMT - 1], " в исх.тексте -> \"...",
 				&STROKA[DST[I2].DST2], "...\"");
-			break;                                     /* - выйти на обобщающую  */
-							   /*диагностику             */
-
-		case  5:                                    /*если код завершени€ = 5,*/
-							/* то:                    */
-			STROKA[DST[I2].DST2 + 20] = '\x0';     /* - диагностич.сообщение;*/
-			printf("%s%c\n%s%s%s\n",
-				"недопустима€ операци€: ",
-				STROKA[DST[I2].DST4 - strlen(FORMT[IFORMT - 1])],
+			break;     
+		case  5:   
+			STROKA[DST[I2].DST2 + 20] = '\x0';     
+			printf("%s%c\n%s%s%s\n","недопустима€ операци€: ",STROKA[DST[I2].DST4 - strlen(FORMT[IFORMT - 1])],
 				" в исх.тексте -> \"...", &STROKA[DST[I2].DST2], "...\"");
-			break;                                     /* - выйти на обобщающую  */
-							   /*диагностику             */
-
-		case  6:                                    /*если код завершени€ = 6 */
-							/* то:                    */
-			STROKA[DST[I2].DST2 + 20] = '\x0';     /* - диагностич.сообщение;*/
-			printf("%s%s\n%s%s%s\n",
-				"повторное объ€вление идентификатора: ",
-				&FORMT[1], " в исх.тексте -> \"...",
+			break;                                    
+		case  6:          
+			STROKA[DST[I2].DST2 + 20] = '\x0';    
+			printf("%s%s\n%s%s%s\n", "повторное объ€вление идентификатора: ",&FORMT[1], " в исх.тексте -> \"...",
 				&STROKA[DST[I2].DST2], "...\"");
-			break;                                     /* - выйти на обобщающую  */
-							   /*диагностику             */
-
+			break;                                    
 		}
 
 	}
