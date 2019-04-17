@@ -1570,15 +1570,10 @@ int OEN2()
 {
 	char RAB[20];
 	char i = 0;
-	FORM();                                        /* форматируем ПЛ1-опера- */
-							/* тор END                */
+	FORM();
 
-	memcpy(ASS_CARD._BUFCARD.OPERAC, "BCR", 3);  /* формируем код безуслов-*/
-							/*ного возврата управления*/
-							/* в вызывающую программу */
-
-	memcpy(ASS_CARD._BUFCARD.OPERAND, "15,14", 5);/* операнды команды и     */
-
+	memcpy(ASS_CARD._BUFCARD.OPERAC, "BCR", 3);  
+	memcpy(ASS_CARD._BUFCARD.OPERAND, "15,14", 5);
 	memcpy(ASS_CARD._BUFCARD.COMM, "Выход из программы", 18);
 
 	ZKARD();
@@ -1640,6 +1635,12 @@ int OEN2()
 				memcpy(ASS_CARD._BUFCARD.COMM, "Определение указателя", 21);
 				ZKARD();
 			} if (SYM[i].TYPE == 'D') {
+				//make correct offset - DS 0f
+				memcpy(ASS_CARD._BUFCARD.OPERAC, "DS", 2);
+				memcpy(ASS_CARD._BUFCARD.OPERAND, "0F", 2);
+				memcpy(ASS_CARD._BUFCARD.COMM, "Выравнивание смещения", 21);
+				ZKARD();
+
 				strcpy(ASS_CARD._BUFCARD.METKA, SYM[i].NAME);
 				ASS_CARD._BUFCARD.METKA[strlen(ASS_CARD._BUFCARD.METKA)] = ' ';
 				if (strlen(SYM[i].INIT) > 0) {
@@ -1680,7 +1681,7 @@ int OEN2()
 							/*           и            */
 	ZKARD();                                       /* запоминание ее         */
 
-	memcpy(ASS_CARD._BUFCARD.METKA, "@RRAB", 4);  /* формирование EQU-псев- */
+	memcpy(ASS_CARD._BUFCARD.METKA, "@RRAB", 5);  /* формирование EQU-псев- */
 	memcpy(ASS_CARD._BUFCARD.OPERAC, "EQU", 3);   /* дооперации определения */
 	memcpy(ASS_CARD._BUFCARD.OPERAND, "5", 1);   /* номера базового регист-*/
 							/* ра общего назначения   */
