@@ -13,7 +13,7 @@
 /* п р е д е л ь н ы е    */
 /* размеры:               */
 #define MAXNISXTXT 50                             /* - исходного текста;    */
-#define NSINT     259                             /* - табл.синтакс.правил; */
+#define NSINT     256                             /* - табл.синтакс.правил; */
 #define NCEL       20                             /* - стека целей;         */
 #define NDST      500                             /* - стека достижений;    */
 #define NVXOD      53                             /* - табл.входов;         */
@@ -67,9 +67,9 @@ union                                             /*шаблон для генерации    */
 		char PROB1;
 		char OPERAC[5];
 		char PROB2;
-		char OPERAND[12];
+		char OPERAND[20];
 		char PROB3;
-		char COMM[52];
+		char COMM[44];
 	} _BUFCARD;
 } ASS_CARD;
 
@@ -180,7 +180,7 @@ struct
 {/*.   32     .*/     0 ,    31 , "*  " ,    0 },
 /*                                               вход с символа - A      */
 {/*.   33     .*/    34 ,     0 , "A  " ,    0 },
-{/*.   34     .*/    35 ,    33 , "BUK" ,    0 },
+{/*.   34     .*/    35 ,    33 , "BUK" ,   248 },
 {/*.   35     .*/     0 ,    34 , "*  " ,    0 },
 /*                                               вход с символа - B      */
 {/*.   36     .*/    37 ,     0 , "B  " ,    0 },
@@ -337,7 +337,7 @@ struct
 {/*.  162     .*/   163 ,   161 , "AVI" ,    0 },
 {/*.  163     .*/     0 ,   162 , "*  " ,    0 },
 /*.                                              вход с символа - AVI    */
-{/*.  164     .*/   248 ,     0 , "AVI" ,    0 },
+{/*.  164     .*/   165 ,     0 , "AVI" ,    0 },
 {/*.  165     .*/   166 ,   164 , "ZNK" ,    0 },
 {/*.  166     .*/   167 ,   165 , "LIT" ,  168 },
 {/*.  167     .*/   197 ,   166 , "AVI" ,    0 },
@@ -436,16 +436,14 @@ struct
 {/*.  246     .*/   247 ,   245 , "ODC" ,    0 },
 {/*.  247     .*/     0 ,   246 , "*  " ,    0 },
 
-{/*.  248     .*/   249 ,   165 , "A  " ,  166 },
+{/*.  248     .*/   249 ,   33  , "D  " ,    0 },
 {/*.  249     .*/   250 ,   248 , "D  " ,    0 },
-{/*.  250     .*/   251 ,   249 , "D  " ,    0 },
-{/*.  251     .*/   252 ,   250 , "R  " ,    0 },
-{/*.  252     .*/   253 ,   251 , "(  " ,    0 },
-{/*.  253     .*/   254 ,   252 , "IDE" ,    0 },
-{/*.  254     .*/   255 ,   253 , ")  " ,    0 },
-{/*.  255     .*/   256 ,   254 , ";  " ,    0 },
-{/*.  256     .*/   257 ,   255 , "AVI" ,    0 },
-{/*.  257     .*/     0 ,   256 , "*  " ,    0 }
+{/*.  250     .*/   251 ,   249 , "R  " ,    0 },
+{/*.  251     .*/   252 ,   250 , "(  " ,    0 },
+{/*.  252     .*/   253 ,   251 , "IDE" ,    0 },
+{/*.  253     .*/   254 ,   252 , ")  " ,    0 },
+{/*.  254     .*/   255 ,   253 , "AVI" ,    0 },
+{/*.  255     .*/     0 ,   254 , "*  " ,    0 }
 
 };
 
@@ -551,7 +549,7 @@ char TPR[NVXOD][NNETRM] =
 		 __________ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___
 		|       AVI:BUK:CIF:IDE:IPE:IPR:LIT:MAN:ODC:OEN:OPA:OPR:PRO:RZR:TEL:ZNK|
 		|__________:___:___:___:___:___:___:___:___:___:___:___:___:___:___:___| */
-		{/*  A*/ 0 , 1 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0  },
+		{/*  A*/ 1 , 1 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0  },
 		{/*  B*/ 0 , 1 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0  },
 		{/*  C*/ 0 , 1 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0  },
 		{/*  D*/ 0 , 1 , 0 , 0 , 0 , 0 , 0 , 0 , 1 , 0 , 0 , 0 , 0 , 0 , 0 , 0  },
@@ -1103,11 +1101,11 @@ int ODC1()
 								 /* по ошибке              */
 	}
 
-	strcpy(SYM[ISYM].NAME, FORMT[1]);  
+	strcpy(SYM[ISYM].NAME, FORMT[1]);
 	strcpy(SYM[ISYM].BASED, "");
 
-	if (!strcmp(FORMT[2], "DECIMAL") && !strcmp(FORMT[3], "FIXED")) { 
-		if(!strcmp(FORMT[4], "BASED")) {
+	if (!strcmp(FORMT[2], "DECIMAL") && !strcmp(FORMT[3], "FIXED")) {
+		if (!strcmp(FORMT[4], "BASED")) {
 			SYM[ISYM].TYPE = 'S';
 			strcpy(SYM[ISYM].BASED, FORMT[5]);
 			strcpy(SYM[ISYM].INIT, "0000B");
@@ -1120,20 +1118,23 @@ int ODC1()
 				strcpy(SYM[ISYM].INIT, FORMT[5]);
 			}
 			else {
-				strcpy(SYM[ISYM].INIT, "0");
+				strcpy(SYM[ISYM].INIT, "");
 			}
 		}
 		ISYM++;
 		return 0;
-	} else if (!strcmp(FORMT[2], "BIN") && !strcmp(FORMT[3], "FIXED")) {
-		SYM[ISYM].TYPE = 'B';                 
+	}
+	else if (!strcmp(FORMT[2], "BIN") && !strcmp(FORMT[3], "FIXED")) {
+		SYM[ISYM].TYPE = 'B';
 		strcpy(SYM[ISYM].RAZR, FORMT[4]);
-		goto ODC11;                              
-	} else if(!strcmp(FORMT[2], "POINTER")) {
+		goto ODC11;
+	}
+	else if (!strcmp(FORMT[2], "POINTER")) {
 		SYM[ISYM].TYPE = 'R';
-		strcpy(SYM[ISYM].INIT, "?");
+		strcpy(SYM[ISYM].INIT, "");
 		strcpy(SYM[ISYM].RAZR, "");
-	} else                                            /* иначе                  */
+	}
+	else                                            /* иначе                  */
 	{
 		SYM[ISYM].TYPE = 'U';                        /* устанавливаем тип иден-*/
 							  /* тификатора = 'U'  и    */
@@ -1290,13 +1291,28 @@ int AVI2()
 	if (IFORMT == 1)                              /* если правая часть одно-*/
 	{                                            /* термовая, то:          */
 		for (i = 0; i < ISYM; i++)                  /* ищем этот терм в табли-*/
-		{                                            /* це имен  и             */
+		{                                           /* це имен  и             */
 			if (!strcmp(SYM[i].NAME, FORMT[0]) &&/* если находим, то:      */
 				strlen(SYM[i].NAME) ==
 				strlen(FORMT[0])
 				)
 			{
-				if (SYM[i].TYPE == 'B')              /* в случае типа=bin fixed*/
+				if (SYM[i].TYPE == 'S' || SYM[i].TYPE == 'R') {
+					memcpy(ASS_CARD._BUFCARD.OPERAC, "L", 1);
+					strcpy(ASS_CARD._BUFCARD.OPERAND, "@RRAB,");
+					strcat(ASS_CARD._BUFCARD.OPERAND, FORMT[0]);
+					ASS_CARD._BUFCARD.OPERAND[strlen(ASS_CARD._BUFCARD.OPERAND)] = ' ';
+					memcpy(ASS_CARD._BUFCARD.COMM, "Загрузка адреса в регистр", 25);
+					ZKARD();
+
+					memcpy(ASS_CARD._BUFCARD.OPERAC, "L", 1);
+					strcpy(ASS_CARD._BUFCARD.OPERAND, "@RRAB,0(@RRAB,0)");
+					ASS_CARD._BUFCARD.OPERAND[strlen(ASS_CARD._BUFCARD.OPERAND)] = ' ';
+					memcpy(ASS_CARD._BUFCARD.COMM, "Загрузка из адреса", 18);
+					ZKARD();
+					return 0;                             
+				}
+				else if (SYM[i].TYPE == 'B')              /* в случае типа=bin fixed*/
 				{
 					if (strcmp(SYM[i].RAZR, "15")    /* и разрядности <= 15    */
 						<= 0)
@@ -1321,16 +1337,6 @@ int AVI2()
 					ZKARD();                             /* запомнить операцию ас- */
 									  /* семблера  и            */
 					return 0;                             /* завершить программу    */
-				}   else if (SYM[i].TYPE == 'R' && !strcmp(FORMT[1], "ADDR")) {
-					memcpy(ASS_CARD._BUFCARD.OPERAC,"LA", 2);
-
-					strcpy(ASS_CARD._BUFCARD.OPERAND,"@RRAB,");
-					strcat(ASS_CARD._BUFCARD.OPERAND,FORMT[0]);
-					ASS_CARD._BUFCARD.OPERAND[strlen(ASS_CARD._BUFCARD.OPERAND)] = ' ';
-					memcpy(ASS_CARD._BUFCARD.COMM,"Загрузка адреса в регистр", 29);
-
-					ZKARD();
-					return 0;
 				}
 				else
 					return 3;                              /* если тип терма не bin  */
@@ -1346,15 +1352,30 @@ int AVI2()
 							/* метического выражения  */
 							/* двухтермовая, то:      */
 	{
-		for (i = 0; i < ISYM; i++)                  /* если правый терм ариф- */
-		{                                            /* метического выражения  */
-			if (!strcmp(SYM[i].NAME,                /*определен в табл.SYM,то:*/
-				FORMT[IFORMT - 1]) &&
-				strlen(SYM[i].NAME) ==
-				strlen(FORMT[IFORMT - 1])
-				)
+		for (i = 0; i < ISYM; i++)                  
+		{
+			char varName[9];
+			if (!strcmp("ADDR", FORMT[0])) {
+				strcpy(varName, FORMT[1]);
+			}
+			else {
+				strcpy(varName, FORMT[IFORMT - 1]);
+			}
+			if (!strcmp(SYM[i].NAME, varName) &&
+				strlen(SYM[i].NAME) == strlen(varName))
 			{
-				if (SYM[i].TYPE == 'B')              /* если тип правого опе-  */
+				if (!strcmp(FORMT[0], "ADDR")) {
+					memcpy(ASS_CARD._BUFCARD.OPERAC, "LA", 2);
+
+					strcpy(ASS_CARD._BUFCARD.OPERAND, "@RRAB,");
+					strcat(ASS_CARD._BUFCARD.OPERAND, varName);
+					ASS_CARD._BUFCARD.OPERAND[strlen(ASS_CARD._BUFCARD.OPERAND)] = ' ';
+					memcpy(ASS_CARD._BUFCARD.COMM, "Загрузка адреса в регистр", 25);
+
+					ZKARD();
+					return 0;
+				}
+				else if (SYM[i].TYPE == 'B')              /* если тип правого опе-  */
 				{                                      /* ранда bin fixed, то:   */
 
 					if (STROKA[DST[I2].DST4 -         /* если знак опер."+",то: */
@@ -1549,50 +1570,55 @@ int OEN2()
 {
 	char RAB[20];
 	char i = 0;
-	FORM();                                        /* форматируем ПЛ1-опера- */
-							/* тор END                */
+	FORM();
 
-	memcpy(ASS_CARD._BUFCARD.OPERAC, "BCR", 3);  /* формируем код безуслов-*/
-							/*ного возврата управления*/
-							/* в вызывающую программу */
-
-	memcpy(ASS_CARD._BUFCARD.OPERAND, "15,14", 5);/* операнды команды и     */
-
+	memcpy(ASS_CARD._BUFCARD.OPERAC, "BCR", 3);
+	memcpy(ASS_CARD._BUFCARD.OPERAND, "15,14", 5);
 	memcpy(ASS_CARD._BUFCARD.COMM, "Выход из программы", 18);
 
-	ZKARD();               
-	for (i = 0; i < ISYM; i++) {                                        
-		if (isalpha(SYM[i].NAME[0])) {                                           
+	ZKARD();
+	for (i = 0; i < ISYM; i++) {
+		if (isalpha(SYM[i].NAME[0])) {
 			if (SYM[i].TYPE == 'B') {
-				strcpy(ASS_CARD._BUFCARD.METKA, SYM[i].NAME); 
-				ASS_CARD._BUFCARD.METKA[strlen(ASS_CARD._BUFCARD.METKA)] = ' '; 
-				memcpy(ASS_CARD._BUFCARD.OPERAC,"DC", 2); 
-				if (strcmp(SYM[i].RAZR, "15") <= 0) { 
-					strcpy(ASS_CARD._BUFCARD.OPERAND, "H\'"); 
-				} else {
+				strcpy(ASS_CARD._BUFCARD.METKA, SYM[i].NAME);
+				ASS_CARD._BUFCARD.METKA[strlen(ASS_CARD._BUFCARD.METKA)] = ' ';
+				memcpy(ASS_CARD._BUFCARD.OPERAC, "DC", 2);
+				if (strcmp(SYM[i].RAZR, "15") <= 0) {
+					strcpy(ASS_CARD._BUFCARD.OPERAND, "H\'");
+				}
+				else {
 					strcpy(ASS_CARD._BUFCARD.OPERAND, "F\'");
 				}
 				strcat(ASS_CARD._BUFCARD.OPERAND, _gcvt(VALUE(SYM[i].INIT), 10, &RAB[0]));
-				ASS_CARD._BUFCARD.OPERAND[strlen(ASS_CARD._BUFCARD.OPERAND)] = '\'';  
+				ASS_CARD._BUFCARD.OPERAND[strlen(ASS_CARD._BUFCARD.OPERAND)] = '\'';
 
-				memcpy(ASS_CARD._BUFCARD.COMM, "Определение переменной", 22); 
+				memcpy(ASS_CARD._BUFCARD.COMM, "Определение переменной", 22);
 
-				ZKARD();                               
-									 
-			} else if (SYM[i].TYPE == 'R') {
-				strcpy(ASS_CARD._BUFCARD.METKA, SYM[i].NAME); 
-				ASS_CARD._BUFCARD.METKA[strlen(ASS_CARD._BUFCARD.METKA)] = ' ';				
-				memcpy(ASS_CARD._BUFCARD.OPERAC, "EQU", 3); 
-				char currentName[8];
-				char based[12] = "           ";
-				strcpy(currentName, SYM[i].NAME);
+				ZKARD();
+
+			}
+			else if (SYM[i].TYPE == 'R') {
+				strcpy(ASS_CARD._BUFCARD.METKA, SYM[i].NAME);
+				ASS_CARD._BUFCARD.METKA[strlen(ASS_CARD._BUFCARD.METKA)] = ' ';
+				memcpy(ASS_CARD._BUFCARD.OPERAC, "DS", 2);
+				strcpy(ASS_CARD._BUFCARD.OPERAND, "F                    ");
+				memcpy(ASS_CARD._BUFCARD.COMM, "Определение указателя", 21);
+				ZKARD();
+			}
+			else if (SYM[i].TYPE == 'S') {
+				strcpy(ASS_CARD._BUFCARD.METKA, SYM[i].NAME);
+				ASS_CARD._BUFCARD.METKA[strlen(ASS_CARD._BUFCARD.METKA)] = ' ';
+				memcpy(ASS_CARD._BUFCARD.OPERAC, "EQU", 3);
+
 				bool basedFound = false;
 				for (int j = 0; j < NSYM; j++) {
-					char anotherVariableReference[8];
-					strcpy(anotherVariableReference, SYM[j].BASED);
-					if (!strcmp(currentName, anotherVariableReference)) {
+					if (SYM[j].TYPE != 'R') {
+						continue;
+					}
+					char anotherVariableName[8];
+					strcpy(anotherVariableName, SYM[j].NAME);
+					if (!strcmp(SYM[i].BASED, anotherVariableName)) {
 						basedFound = true;
-						strcpy(based, SYM[j].NAME);
 						break;
 					}
 				}
@@ -1602,29 +1628,34 @@ int OEN2()
 					return 2;
 				}
 
-				memcpy(ASS_CARD._BUFCARD.OPERAND, based, strlen(based));
-				memcpy(ASS_CARD._BUFCARD.COMM, "Определение псевдонима", 22);  
-				ZKARD();                               
-			} else if (SYM[i].TYPE == 'S') {
-				strcpy(ASS_CARD._BUFCARD.METKA, SYM[i].NAME);
-				ASS_CARD._BUFCARD.METKA[strlen(ASS_CARD._BUFCARD.METKA)] = ' ';
-				memcpy(ASS_CARD._BUFCARD.OPERAC, "DC", 2);
-				strcpy(ASS_CARD._BUFCARD.OPERAND, "F            ");
-				memcpy(ASS_CARD._BUFCARD.COMM, "Определение указателя", 21);
+				memcpy(ASS_CARD._BUFCARD.OPERAND, SYM[i].BASED, strlen(SYM[i].BASED));
+				memcpy(ASS_CARD._BUFCARD.COMM, "Определение псевдонима", 22);
 				ZKARD();
 			} if (SYM[i].TYPE == 'D') {
+				//make correct offset - DS 0f
+				memcpy(ASS_CARD._BUFCARD.OPERAC, "DS", 2);
+				memcpy(ASS_CARD._BUFCARD.OPERAND, "0F", 2);
+				memcpy(ASS_CARD._BUFCARD.COMM, "Выравнивание смещения", 21);
+				ZKARD();
+
 				strcpy(ASS_CARD._BUFCARD.METKA, SYM[i].NAME);
 				ASS_CARD._BUFCARD.METKA[strlen(ASS_CARD._BUFCARD.METKA)] = ' ';
-				memcpy(ASS_CARD._BUFCARD.OPERAC, "DC", 2);
-
+				if (strlen(SYM[i].INIT) > 0) {
+					memcpy(ASS_CARD._BUFCARD.OPERAC, "DC", 2);
+				}
+				else {
+					memcpy(ASS_CARD._BUFCARD.OPERAC, "DS", 2);
+				}
 				char razr[5];
 				strcpy(razr, SYM[i].RAZR);
 				char value[12] = "           ";
 				strcpy(value, "PL");
 				strcat(value, razr);
-				strcat(value, "\'");
-				strcat(value, SYM[i].INIT);
-				strcat(value, "\'");
+				if (strlen(SYM[i].INIT) > 0) {
+					strcat(value, "\'");
+					strcat(value, SYM[i].INIT);
+					strcat(value, "\'");
+				}
 				memcpy(ASS_CARD._BUFCARD.OPERAND, value, strlen(value));
 
 				memcpy(ASS_CARD._BUFCARD.COMM, "Определение переменной", 22);
@@ -1647,7 +1678,7 @@ int OEN2()
 							/*           и            */
 	ZKARD();                                       /* запоминание ее         */
 
-	memcpy(ASS_CARD._BUFCARD.METKA, "@RRAB", 4);  /* формирование EQU-псев- */
+	memcpy(ASS_CARD._BUFCARD.METKA, "@RRAB", 5);  /* формирование EQU-псев- */
 	memcpy(ASS_CARD._BUFCARD.OPERAC, "EQU", 3);   /* дооперации определения */
 	memcpy(ASS_CARD._BUFCARD.OPERAND, "5", 1);   /* номера базового регист-*/
 							/* ра общего назначения   */
@@ -1695,13 +1726,13 @@ int OPA2()
 			strlen(FORMT[0])
 			)
 		{
-			if (SYM[i].TYPE == 'B')              /* если этот идентификатор*/
+			if (SYM[i].TYPE == 'B' || SYM[i].TYPE == 'S' || SYM[i].TYPE == 'D' || SYM[i].TYPE == 'R')              /* если этот идентификатор*/
 			{                                      /* имеет тип bin fixed,то:*/
 
 				if (strcmp(SYM[i].RAZR, "15")    /* если bin fixed (15),то:*/
 					<= 0)
 					memcpy(ASS_CARD._BUFCARD.OPERAC,   /* сформировать команду   */
-						"STH", 3);/* записи полуслова       */
+						"ST", 2);/* записи полуслова       */
 
 				else                                  /* иначе:                 */
 					memcpy(ASS_CARD._BUFCARD.OPERAC,   /* команду записи слова   */
@@ -1724,8 +1755,8 @@ int OPA2()
 				return 0;                             /* завершить программу    */
 			}
 			else {
-				return 3;                 
-			}				 
+				return 3;
+			}
 		}
 	}
 	return 4;                                       /* если идентификатор ра- */
@@ -2049,39 +2080,23 @@ main1:                                            /* по завершении чтения   */
 				"недопустимый тип идентификатора: ",
 				&FORMT[IFORMT - 1], " в исх.тексте -> \"...",
 				&STROKA[DST[I2].DST2], "...\"");
-			break;                                     /* -выйти на обобщающую   */
-							   /*диагностику             */
-
-		case  4:                                    /*если код завершения = 4,*/
-							/* то:                    */
-			STROKA[DST[I2].DST2 + 20] = '\x0';     /* - диагностич.сообщение;*/
-			printf("%s%s\n%s%s%s\n",
-				"неопределенный идентификатор: ",
+			break;
+		case  4:
+			STROKA[DST[I2].DST2 + 20] = '\x0';
+			printf("%s%s\n%s%s%s\n", "неопределенный идентификатор: ",
 				&FORMT[IFORMT - 1], " в исх.тексте -> \"...",
 				&STROKA[DST[I2].DST2], "...\"");
-			break;                                     /* - выйти на обобщающую  */
-							   /*диагностику             */
-
-		case  5:                                    /*если код завершения = 5,*/
-							/* то:                    */
-			STROKA[DST[I2].DST2 + 20] = '\x0';     /* - диагностич.сообщение;*/
-			printf("%s%c\n%s%s%s\n",
-				"недопустимая операция: ",
-				STROKA[DST[I2].DST4 - strlen(FORMT[IFORMT - 1])],
+			break;
+		case  5:
+			STROKA[DST[I2].DST2 + 20] = '\x0';
+			printf("%s%c\n%s%s%s\n", "недопустимая операция: ", STROKA[DST[I2].DST4 - strlen(FORMT[IFORMT - 1])],
 				" в исх.тексте -> \"...", &STROKA[DST[I2].DST2], "...\"");
-			break;                                     /* - выйти на обобщающую  */
-							   /*диагностику             */
-
-		case  6:                                    /*если код завершения = 6 */
-							/* то:                    */
-			STROKA[DST[I2].DST2 + 20] = '\x0';     /* - диагностич.сообщение;*/
-			printf("%s%s\n%s%s%s\n",
-				"повторное объявление идентификатора: ",
-				&FORMT[1], " в исх.тексте -> \"...",
+			break;
+		case  6:
+			STROKA[DST[I2].DST2 + 20] = '\x0';
+			printf("%s%s\n%s%s%s\n", "повторное объявление идентификатора: ", &FORMT[1], " в исх.тексте -> \"...",
 				&STROKA[DST[I2].DST2], "...\"");
-			break;                                     /* - выйти на обобщающую  */
-							   /*диагностику             */
-
+			break;
 		}
 
 	}
